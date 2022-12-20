@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of Hyperf + PicPay.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/PicPay/hyperf-metric
+ * @document https://github.com/PicPay/hyperf-metric/wiki
+ * @contact  @PicPay
+ * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
 use Hyperf\Metric\Adapter\Prometheus\Constants;
 
@@ -35,7 +35,7 @@ return [
             'udp_host' => env('STATSD_UDP_HOST', '127.0.0.1'),
             'udp_port' => env('STATSD_UDP_PORT', '8125'),
             'timeout' => env('STATSD_CONNECTION_TIMEOUT', null),
-            'persistent' => env('STATSD_CONNECTION_PERSISTENT', true),
+            'persistent' => env('STATSD_CONNECTION_PERSISTENT', false),
             'enable_batch' => env('STATSD_ENABLE_BATCH', true),
             'push_interval' => env('STATSD_PUSH_INTERVAL', 5),
             'sample_rate' => env('STATSD_SAMPLE_RATE', 1.0),
