@@ -36,32 +36,32 @@ class MetricFactory implements MetricFactoryInterface
 
     public function makeCounter(string $name, ?array $labelNames = []): CounterInterface
     {
-        return new Counter(
+        return (new Counter(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function makeGauge(string $name, ?array $labelNames = []): GaugeInterface
     {
-        return new Gauge(
+        return (new Gauge(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function makeHistogram(string $name, ?array $labelNames = []): HistogramInterface
     {
-        return new Histogram(
+        return (new Histogram(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function handle(): void
