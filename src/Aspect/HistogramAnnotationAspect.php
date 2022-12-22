@@ -18,9 +18,9 @@ use Hyperf\Metric\Timer;
 
 class HistogramAnnotationAspect extends AbstractAspect
 {
-    public array $classes = [];
+    public $classes = [];
 
-    public array $annotations = [
+    public $annotations = [
         Histogram::class,
     ];
 
