@@ -16,7 +16,6 @@ use Hyperf\Metric\Contract\MetricFactoryInterface;
 use Hyperf\Metric\Event\MetricFactoryReady;
 use Hyperf\Metric\MetricFactoryPicker;
 use Hyperf\Process\AbstractProcess;
-use Hyperf\Process\Annotation\Process;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Server;
 
@@ -25,9 +24,9 @@ use Swoole\Server;
  */
 class MetricProcess extends AbstractProcess
 {
-    public $name = 'metric';
+    public string $name = 'metric';
 
-    public $nums = 1;
+    public int $nums = 1;
 
     protected MetricFactoryInterface $factory;
 
