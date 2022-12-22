@@ -13,19 +13,21 @@ namespace Hyperf\Metric\Aspect;
 
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Di\Exception\Exception;
 use Hyperf\Metric\Annotation\Histogram;
 use Hyperf\Metric\Timer;
 
 class HistogramAnnotationAspect extends AbstractAspect
 {
-    public $classes = [];
+    public array $classes = [];
 
-    public $annotations = [
+    public array $annotations = [
         Histogram::class,
     ];
 
     /**
      * @return mixed return the value from process method of ProceedingJoinPoint, or the value that you handled
+     * @throws Exception
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {

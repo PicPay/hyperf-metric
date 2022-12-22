@@ -22,7 +22,7 @@ use Hyperf\Metric\Exception\InvalidArgumentException;
 use Hyperf\Metric\Exception\RuntimeException;
 use Hyperf\Metric\MetricFactoryPicker;
 use Hyperf\Utils\Coordinator\Constants as Coord;
-use Hyperf\Utils\Coordinator\CoordinatorManager;
+use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Utils\Coroutine;
 use Hyperf\Utils\Network;
 use Hyperf\Utils\Str;

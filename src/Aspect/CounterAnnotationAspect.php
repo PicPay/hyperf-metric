@@ -18,9 +18,9 @@ use Hyperf\Metric\Contract\MetricFactoryInterface;
 
 class CounterAnnotationAspect extends AbstractAspect
 {
-    public $classes = [];
+    public array $classes = [];
 
-    public $annotations = [
+    public array $annotations = [
         Counter::class,
     ];
 
