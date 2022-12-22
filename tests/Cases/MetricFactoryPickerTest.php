@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of Hyperf + PicPay.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/PicPay/hyperf-metric
+ * @document https://github.com/PicPay/hyperf-metric/wiki
+ * @contact  @PicPay
+ * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
 namespace HyperfTest\Metric\Cases;
 
@@ -21,20 +21,19 @@ use Hyperf\Metric\Adapter\StatsD\MetricFactory as StatsDFactory;
 use Hyperf\Metric\MetricFactoryPicker;
 use Hyperf\Process\ProcessCollector;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
+use Swoole\Process;
 
 /**
  * @internal
  * @coversNothing
  */
-class MetricFactoryPickerTest extends TestCase
+final class MetricFactoryPickerTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        Mockery::close();
-    }
+    use MockeryPHPUnitIntegration;
 
-    public function testPrometheus()
+    public function testPrometheus(): void
     {
         $config = new Config([
             'metric' => [
@@ -44,16 +43,15 @@ class MetricFactoryPickerTest extends TestCase
             ],
         ]);
         $container = Mockery::mock(Container::class);
-        $container->shouldReceive('get')->with(ConfigInterface::class)->andReturn($config);
-
-        $container->shouldReceive('get')->with(PrometheusFactory::class)->andReturn(Mockery::mock(PrometheusFactory::class));
+        $container->expects('get')->with(ConfigInterface::class)->andReturns($config);
+        $container->expects('get')->with(PrometheusFactory::class)->andReturns(Mockery::mock(PrometheusFactory::class));
 
         $picker = new MetricFactoryPicker();
 
         $this->assertInstanceOf(PrometheusFactory::class, $picker($container));
     }
 
-    public function testStatsD()
+    public function testStatsD(): void
     {
         $config = new Config([
             'metric' => [
@@ -71,15 +69,15 @@ class MetricFactoryPickerTest extends TestCase
             ],
         ]);
         $container = Mockery::mock(Container::class);
-        $container->shouldReceive('get')->with(ConfigInterface::class)->andReturn($config);
-        $container->shouldReceive('get')->with(StatsDFactory::class)->andReturn(Mockery::mock(StatsDFactory::class));
+        $container->expects('get')->with(ConfigInterface::class)->andReturn($config);
+        $container->expects('get')->with(StatsDFactory::class)->andReturn(Mockery::mock(StatsDFactory::class));
 
         $picker = new MetricFactoryPicker();
 
         $this->assertInstanceOf(StatsDFactory::class, $picker($container));
     }
 
-    public function testProxy()
+    public function testProxy(): void
     {
         $config = new Config([
             'metric' => [
@@ -96,17 +94,17 @@ class MetricFactoryPickerTest extends TestCase
                 ],
             ],
         ]);
-        ProcessCollector::add('dummy', Mockery::mock(\Swoole\Process::class));
+        ProcessCollector::add('dummy', Mockery::mock(Process::class));
         $container = Mockery::mock(Container::class);
-        $container->shouldReceive('get')->with(ConfigInterface::class)->andReturn($config);
-        $container->shouldReceive('get')->with(RemoteFactory::class)->andReturn(Mockery::mock(RemoteFactory::class));
+        $container->expects('get')->with(ConfigInterface::class)->andReturn($config);
+        $container->expects('get')->with(RemoteFactory::class)->andReturn(Mockery::mock(RemoteFactory::class));
 
         $picker = new MetricFactoryPicker();
 
         $this->assertInstanceOf(RemoteFactory::class, $picker($container));
     }
 
-    public function testMetricProcess()
+    public function testMetricProcess(): void
     {
         $config = new Config([
             'metric' => [
@@ -123,10 +121,10 @@ class MetricFactoryPickerTest extends TestCase
                 ],
             ],
         ]);
-        ProcessCollector::add('dummy', Mockery::mock(\Swoole\Process::class));
+        ProcessCollector::add('dummy', Mockery::mock(Process::class));
         $container = Mockery::mock(Container::class);
-        $container->shouldReceive('get')->with(ConfigInterface::class)->andReturn($config);
-        $container->shouldReceive('get')->with(PrometheusFactory::class)->andReturn(Mockery::mock(PrometheusFactory::class));
+        $container->expects('get')->with(ConfigInterface::class)->andReturn($config);
+        $container->expects('get')->with(PrometheusFactory::class)->andReturn(Mockery::mock(PrometheusFactory::class));
 
         MetricFactoryPicker::$inMetricProcess = true;
         $picker = new MetricFactoryPicker();
@@ -134,7 +132,7 @@ class MetricFactoryPickerTest extends TestCase
         $this->assertInstanceOf(PrometheusFactory::class, $picker($container));
     }
 
-    public function testNoOpDriver()
+    public function testNoOpDriver(): void
     {
         $config = new Config([
             'metric' => [
@@ -150,8 +148,8 @@ class MetricFactoryPickerTest extends TestCase
             ],
         ]);
         $container = Mockery::mock(Container::class);
-        $container->shouldReceive('get')->with(ConfigInterface::class)->andReturn($config);
-        $container->shouldReceive('get')->with(NoOpFactory::class)->andReturn(Mockery::mock(NoOpFactory::class));
+        $container->expects('get')->with(ConfigInterface::class)->andReturn($config);
+        $container->expects('get')->with(NoOpFactory::class)->andReturn(Mockery::mock(NoOpFactory::class));
 
         MetricFactoryPicker::$inMetricProcess = true;
         $picker = new MetricFactoryPicker();

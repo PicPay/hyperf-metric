@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of Hyperf + PicPay.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/PicPay/hyperf-metric
+ * @document https://github.com/PicPay/hyperf-metric/wiki
+ * @contact  @PicPay
+ * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
 namespace Hyperf\Metric\Adapter\StatsD;
 
@@ -36,32 +36,32 @@ class MetricFactory implements MetricFactoryInterface
 
     public function makeCounter(string $name, ?array $labelNames = []): CounterInterface
     {
-        return new Counter(
+        return (new Counter(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function makeGauge(string $name, ?array $labelNames = []): GaugeInterface
     {
-        return new Gauge(
+        return (new Gauge(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function makeHistogram(string $name, ?array $labelNames = []): HistogramInterface
     {
-        return new Histogram(
+        return (new Histogram(
             $this->client,
             $name,
             $this->getSampleRate(),
-            $labelNames
-        );
+            array_merge(['service.name'], $labelNames),
+        ))->with($this->getNamespace());
     }
 
     public function handle(): void
@@ -90,7 +90,7 @@ class MetricFactory implements MetricFactoryInterface
         $host = $this->config->get("metric.metric.{$name}.udp_host");
         $port = $this->config->get("metric.metric.{$name}.udp_port");
         $timeout = $this->config->get("metric.metric.{$name}.timeout");
-        $persistent = $this->config->get("metric.metric.{$name}.persistent", true);
+        $persistent = $this->config->get("metric.metric.{$name}.persistent", false);
         return make(Connection::class, [
             'host' => $host,
             'port' => (int) $port,

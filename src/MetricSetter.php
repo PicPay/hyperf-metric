@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of Hyperf + PicPay.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/PicPay/hyperf-metric
+ * @document https://github.com/PicPay/hyperf-metric/wiki
+ * @contact  @PicPay
+ * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
 namespace Hyperf\Metric;
 
 use Hyperf\Metric\Contract\GaugeInterface;
 use Hyperf\Retry\Retry;
 use Hyperf\Utils\Coroutine;
+
+use function array_values;
+use function str_replace;
 
 /**
  * A Helper trait to set stats from swoole and kernal.
@@ -28,7 +31,7 @@ trait MetricSetter
     private function trySet(string $prefix, array $metrics, array $stats): void
     {
         foreach (array_keys($stats) as $key) {
-            $metricsKey = \str_replace('.', '_', $prefix . $key);
+            $metricsKey = str_replace('.', '_', $prefix . $key);
             if (array_key_exists($metricsKey, $metrics)) {
                 $metrics[$metricsKey]->set($stats[$key]);
             }
@@ -47,7 +50,7 @@ trait MetricSetter
             $out[$name] = $this
                 ->factory
                 ->makeGauge($name, \array_keys($labels))
-                ->with(...\array_values($labels));
+                ->with(...array_values($labels));
         }
         return $out;
     }
