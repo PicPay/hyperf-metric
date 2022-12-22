@@ -12,11 +12,10 @@
     "description": "This is a hyperf/metric version suited for PicPay's Hyperf microservices needs.",
     "require": {
         "php": ">=8.0",
-        "hyperf/contract": "^2.2|^3.0",
-        "hyperf/guzzle": "^2.2|^3.0",
-        "hyperf/utils": "^2.2|^3.0",
-        "promphp/prometheus_client_php": "2.2.*",
-        "psr/container": "^1.0|^2.0",
+        "hyperf/contract": "^2.2",
+        "hyperf/guzzle": "^2.2",
+        "hyperf/utils": "^2.2",
+        "psr/container": "^2.0",
         "psr/event-dispatcher": "^1.0",
         "psr/http-message": "^1.0"
     },
@@ -28,7 +27,9 @@
         "hyperf/process": "^2.2",
         "mockery/mockery": "^1.5",
         "phpunit/phpunit": "^9.5",
+        "promphp/prometheus_client_php": "^2.6",
         "roave/security-advisories": "dev-latest",
+        "slickdeals/statsd": "^3.1",
         "swoole/ide-helper": "^5.0"
     },
     "suggest": {
@@ -61,9 +62,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "3.0-dev"
-        },
         "hyperf": {
             "config": "Hyperf\\Metric\\ConfigProvider"
         }
