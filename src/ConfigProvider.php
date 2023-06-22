@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Metric;
 
 use Domnikl\Statsd\Connection;
-use Domnikl\Statsd\Connection\UdpSocket;
+use Hyperf\Metric\Adapter\StatsD\Connection as StatsDConnection;
 use Hyperf\Metric\Aspect\CounterAnnotationAspect;
 use Hyperf\Metric\Aspect\HistogramAnnotationAspect;
 use Hyperf\Metric\Contract\MetricFactoryInterface;
@@ -34,7 +34,7 @@ class ConfigProvider
             'dependencies' => [
                 MetricFactoryInterface::class => MetricFactoryPicker::class,
                 Adapter::class => InMemory::class,
-                Connection::class => UdpSocket::class,
+                Connection::class => StatsDConnection::class,
                 DriverInterface::class => Guzzle::class,
             ],
             'aspects' => [
