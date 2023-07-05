@@ -18,6 +18,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Uri;
 use Hyperf\Di\Aop\AroundInterface;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Metric\Support\Uri as SupportUri;
 use Hyperf\Metric\Timer;
 use Psr\Http\Message\ResponseInterface;
 
@@ -44,7 +45,7 @@ class HttpClientMetricAspect implements AroundInterface
         $host = $base_uri === null ? (parse_url($uri, PHP_URL_HOST) ?? '') : $base_uri->getHost();
 
         $labels = [
-            'uri' => $uri,
+            'uri' => SupportUri::sanitize($uri),
             'host' => $host,
             'method' => $method,
             'http_status_code' => '200',

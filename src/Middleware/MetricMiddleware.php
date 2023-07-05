@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Metric\Middleware;
 
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Metric\Support\Uri;
 use Hyperf\Metric\Timer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -55,7 +56,7 @@ class MetricMiddleware implements MiddlewareInterface
     {
         $dispatched = $request->getAttribute(Dispatched::class);
         if (! $dispatched) {
-            return $request->getUri()->getPath();
+            return Uri::sanitize($request->getUri()->getPath());
         }
         if (! $dispatched->handler) {
             return 'not_found';
