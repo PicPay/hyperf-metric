@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  @PicPay
  * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
-namespace PicPay\Hyperf\Commons\Observability\Metrics\Listener;
+namespace Hyperf\Metric\Listener;
 
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Contract\ListenerInterface;

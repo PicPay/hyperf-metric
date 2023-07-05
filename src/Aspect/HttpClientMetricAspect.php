@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  @PicPay
  * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
  */
-namespace PicPay\Hyperf\Commons\Observability\Metrics\Aspect;
+namespace Hyperf\Metric\Aspect;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
