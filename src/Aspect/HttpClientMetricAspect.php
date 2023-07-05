@@ -1,7 +1,14 @@
 <?php
 
 declare(strict_types=1);
-
+/**
+ * This file is part of Hyperf + PicPay.
+ *
+ * @link     https://github.com/PicPay/hyperf-metric
+ * @document https://github.com/PicPay/hyperf-metric/wiki
+ * @contact  @PicPay
+ * @license  https://github.com/PicPay/hyperf-metric/blob/main/LICENSE
+ */
 namespace PicPay\Hyperf\Commons\Observability\Metrics\Aspect;
 
 use GuzzleHttp\Client;
@@ -40,7 +47,7 @@ class HttpClientMetricAspect implements AroundInterface
             'uri' => $uri,
             'host' => $host,
             'method' => $method,
-            'http_status_code' => '200'
+            'http_status_code' => '200',
         ];
 
         $timer = new Timer('http_client_requests', $labels);
@@ -74,4 +81,3 @@ class HttpClientMetricAspect implements AroundInterface
         };
     }
 }
-

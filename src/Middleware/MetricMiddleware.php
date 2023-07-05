@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
 class MetricMiddleware implements MiddlewareInterface
 {
@@ -29,15 +30,25 @@ class MetricMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $labels = [
-            'request_status' => '500', // default to 500 in case uncaught exception occur
+            'request_status' => '500',
             'request_path' => $this->getPath($request),
             'request_method' => $request->getMethod(),
         ];
+
         $timer = new Timer('http_requests', $labels);
-        $response = $handler->handle($request);
-        $labels['request_status'] = (string) $response->getStatusCode();
-        $timer->end($labels);
-        return $response;
+
+        try {
+            $response = $handler->handle($request);
+            $labels['request_status'] = (string) $response->getStatusCode();
+            $timer->end($labels);
+
+            return $response;
+        } catch (Throwable $exception) {
+            $this->countException($request, $exception);
+            $timer->end($labels);
+
+            throw $exception;
+        }
     }
 
     protected function getPath(ServerRequestInterface $request): string
@@ -50,5 +61,19 @@ class MetricMiddleware implements MiddlewareInterface
             return 'not_found';
         }
         return $dispatched->handler->route;
+    }
+
+    protected function countException(ServerRequestInterface $request, Throwable $exception): void
+    {
+        $labels = [
+            'request_path' => $this->getPath($request),
+            'request_method' => $request->getMethod(),
+            'class' => $exception::class,
+            'message' => $exception->getMessage(),
+            'code' => (string) $exception->getCode(),
+            'line' => (string) $exception->getLine(),
+        ];
+
+        Metric::count('exception_count', 1, $labels);
     }
 }

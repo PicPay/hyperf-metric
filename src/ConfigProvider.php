@@ -20,9 +20,14 @@ use Hyperf\Metric\Listener\OnBeforeHandle;
 use Hyperf\Metric\Listener\OnMetricFactoryReady;
 use Hyperf\Metric\Listener\OnPipeMessage;
 use Hyperf\Metric\Listener\OnWorkerStart;
+use Hyperf\Metric\Middleware\MetricMiddleware;
 use Hyperf\Metric\Process\MetricProcess;
 use InfluxDB\Driver\DriverInterface;
 use InfluxDB\Driver\Guzzle;
+use PicPay\Hyperf\Commons\Observability\Metrics\Aspect\HttpClientMetricAspect;
+use PicPay\Hyperf\Commons\Observability\Metrics\Aspect\MongoCollectionMetricAspect;
+use PicPay\Hyperf\Commons\Observability\Metrics\Aspect\RedisMetricAspect;
+use PicPay\Hyperf\Commons\Observability\Metrics\Listener\DbQueryExecutedMetricListener;
 use Prometheus\Storage\Adapter;
 use Prometheus\Storage\InMemory;
 
@@ -31,6 +36,14 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The config for metric component.',
+                    'source' => __DIR__ . '/../publish/metric.php',
+                    'destination' => BASE_PATH . '/config/autoload/metric.php',
+                ],
+            ],
             'dependencies' => [
                 MetricFactoryInterface::class => MetricFactoryPicker::class,
                 Adapter::class => InMemory::class,
@@ -40,16 +53,15 @@ class ConfigProvider
             'aspects' => [
                 CounterAnnotationAspect::class,
                 HistogramAnnotationAspect::class,
+                HttpClientMetricAspect::class,
+                MongoCollectionMetricAspect::class,
+                RedisMetricAspect::class,
             ],
-            'publish' => [
-                [
-                    'id' => 'config',
-                    'description' => 'The config for metric component.',
-                    'source' => __DIR__ . '/../publish/metric.php',
-                    'destination' => BASE_PATH . '/config/autoload/metric.php',
-                ],
+            'middlewares' => [
+                MetricMiddleware::class,
             ],
             'listeners' => [
+                DbQueryExecutedMetricListener::class,
                 OnPipeMessage::class,
                 OnMetricFactoryReady::class,
                 OnBeforeHandle::class,
