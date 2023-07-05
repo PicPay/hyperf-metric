@@ -15,11 +15,16 @@ use Domnikl\Statsd\Connection;
 use Hyperf\Metric\Adapter\StatsD\Connection as StatsDConnection;
 use Hyperf\Metric\Aspect\CounterAnnotationAspect;
 use Hyperf\Metric\Aspect\HistogramAnnotationAspect;
+use Hyperf\Metric\Aspect\HttpClientMetricAspect;
+use Hyperf\Metric\Aspect\MongoCollectionMetricAspect;
+use Hyperf\Metric\Aspect\RedisMetricAspect;
 use Hyperf\Metric\Contract\MetricFactoryInterface;
+use Hyperf\Metric\Listener\DbQueryExecutedMetricListener;
 use Hyperf\Metric\Listener\OnBeforeHandle;
 use Hyperf\Metric\Listener\OnMetricFactoryReady;
 use Hyperf\Metric\Listener\OnPipeMessage;
 use Hyperf\Metric\Listener\OnWorkerStart;
+use Hyperf\Metric\Middleware\MetricMiddleware;
 use Hyperf\Metric\Process\MetricProcess;
 use InfluxDB\Driver\DriverInterface;
 use InfluxDB\Driver\Guzzle;
@@ -31,6 +36,14 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The config for metric component.',
+                    'source' => __DIR__ . '/../publish/metric.php',
+                    'destination' => BASE_PATH . '/config/autoload/metric.php',
+                ],
+            ],
             'dependencies' => [
                 MetricFactoryInterface::class => MetricFactoryPicker::class,
                 Adapter::class => InMemory::class,
@@ -40,16 +53,15 @@ class ConfigProvider
             'aspects' => [
                 CounterAnnotationAspect::class,
                 HistogramAnnotationAspect::class,
+                HttpClientMetricAspect::class,
+                MongoCollectionMetricAspect::class,
+                RedisMetricAspect::class,
             ],
-            'publish' => [
-                [
-                    'id' => 'config',
-                    'description' => 'The config for metric component.',
-                    'source' => __DIR__ . '/../publish/metric.php',
-                    'destination' => BASE_PATH . '/config/autoload/metric.php',
-                ],
+            'middlewares' => [
+                MetricMiddleware::class,
             ],
             'listeners' => [
+                DbQueryExecutedMetricListener::class,
                 OnPipeMessage::class,
                 OnMetricFactoryReady::class,
                 OnBeforeHandle::class,

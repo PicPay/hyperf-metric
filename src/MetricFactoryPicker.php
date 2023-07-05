@@ -37,12 +37,12 @@ final class MetricFactoryPicker
         $useStandaloneProcess = $config->get('metric.use_standalone_process', true);
 
         // misconfiguration.
-        if ($useStandaloneProcess && ! static::$isCommand && empty(ProcessCollector::all())) {
+        if ($useStandaloneProcess && ! self::$isCommand && empty(ProcessCollector::all())) {
             return $container->get(Adapter\NoOp\MetricFactory::class);
         }
 
         // Return a proxy object for workers if user wants to use a dedicated metric process.
-        if ($useStandaloneProcess && ! static::$inMetricProcess && ! static::$isCommand) {
+        if ($useStandaloneProcess && ! self::$inMetricProcess && ! self::$isCommand) {
             return $container->get(RemoteFactory::class);
         }
 

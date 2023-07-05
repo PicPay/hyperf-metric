@@ -13,6 +13,7 @@ namespace Hyperf\Metric\Adapter\Prometheus;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Guzzle\ClientFactory as GuzzleClientFactory;
 use Hyperf\Metric\Contract\CounterInterface;
 use Hyperf\Metric\Contract\GaugeInterface;
@@ -22,7 +23,6 @@ use Hyperf\Metric\Exception\InvalidArgumentException;
 use Hyperf\Metric\Exception\RuntimeException;
 use Hyperf\Metric\MetricFactoryPicker;
 use Hyperf\Utils\Coordinator\Constants as Coord;
-use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Utils\Coroutine;
 use Hyperf\Utils\Network;
 use Hyperf\Utils\Str;
